@@ -3,8 +3,8 @@ package com.e_commerce.AI_Powered_Inventory_Backend.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.e_commerce.AI_Powered_Inventory_Backend.dto.response.MlForecastResponse;
 import com.e_commerce.AI_Powered_Inventory_Backend.dto.response.ForecastResponse;
-//import com.e_commerce.AI_Powered_Inventory_Backend.dto.response.MlForecastResponse;
 import com.e_commerce.AI_Powered_Inventory_Backend.exception.ApiException;
 import com.e_commerce.AI_Powered_Inventory_Backend.entity.Forecast;
 import com.e_commerce.AI_Powered_Inventory_Backend.entity.Product;
@@ -31,6 +31,7 @@ public class ForecastService {
     private final ProductRepository productRepository;
     private final SalesRecordRepository salesRecordRepository;
     private final ForecastRepository forecastRepository;
+    private final MlClientService mlClientService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

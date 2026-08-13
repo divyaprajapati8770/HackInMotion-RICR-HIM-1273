@@ -42,6 +42,10 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    @Column(name = "email_verified", nullable = false)
+    @Builder.Default
+    private boolean emailVerified = false;
+
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
