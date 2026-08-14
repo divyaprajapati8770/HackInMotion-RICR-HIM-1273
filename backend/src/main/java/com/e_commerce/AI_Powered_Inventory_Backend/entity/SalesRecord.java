@@ -1,12 +1,11 @@
 package com.e_commerce.AI_Powered_Inventory_Backend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "sales_records")
@@ -14,27 +13,38 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class SalesRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Product ID is required")
-    @Positive(message = "Product ID must be greater than 0")
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @NotNull(message = "Sale date is required")
     @Column(name = "sale_date", nullable = false)
     private LocalDate saleDate;
 
-    @NotNull(message = "Quantity is required")
-    @Positive(message = "Quantity must be greater than 0")
-    @Column(nullable = false)
-    private Integer quantity;
+    @Column(name = "units_sold", nullable = false)
+    private Integer unitsSold;
 
-    @NotNull(message = "Price is required")
-    @PositiveOrZero(message = "Price cannot be negative")
-    private Double price;
+    @Builder.Default
+    @Column(name = "unit_price", nullable = false, precision = 12, scale = 2)
+    private BigDecimal unitPrice = BigDecimal.ZERO;
+
+    @Builder.Default
+    @Column(length = 60)
+    private String channel = "default";
+
+    @Builder.Default
+    @Column(nullable = false, length = 20)
+    private String source = "CSV";
+
+    @Builder.Default
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
