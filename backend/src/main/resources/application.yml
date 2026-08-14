@@ -10,6 +10,10 @@ spring:
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 20000
 
   jpa:
     hibernate:
@@ -37,6 +41,10 @@ app:
   ml-service:
     base-url: ${ML_SERVICE_URL:http://localhost:8000}
 
+  mail:
+      resend-api-key: ${RESEND_API_KEY:}
+      from: ${MAIL_FROM:Obstocker <onboarding@resend.dev>}
+      app-base-url: ${APP_BASE_URL:http://localhost:3000}
 
   resend:
     api-key: ${RESEND_API_KEY}

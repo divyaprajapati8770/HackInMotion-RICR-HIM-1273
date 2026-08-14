@@ -1,9 +1,11 @@
 package com.e_commerce.AI_Powered_Inventory_Backend.security;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,14 +17,24 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
+    private final JwtAuthFilter jwtAuthFilter;
+
+    @Value("${app.cors.allowed-origins}")
+    private String allowedOrigins;
     /**
      * Password encoder used for storing and verifying user passwords.
      */
@@ -76,72 +88,57 @@ public class SecurityConfig {
      * Security configuration.
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
+        configuration.setAllowedOrigins(
+                List.of(allowedOrigins.split(","))
+        );
+
+        configuration.setAllowedMethods(
+                List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+        );
+
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                /*
-                 * JWT-based REST API does not require CSRF protection.
-                 */
-                .csrf(AbstractHttpConfigurer::disable)
-
-                /*
-                 * Do not create HTTP sessions.
-                 * Authentication is handled through JWT.
-                 */
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
-                /*
-                 * Endpoint authorization.
-                 */
                 .authorizeHttpRequests(auth -> auth
-
-                        /*
-                         * Public authentication endpoints.
-                         */
                         .requestMatchers(
-                                "/api/auth/register",
-                                "/api/auth/signup",
-                                "/api/auth/login"
-                        ).permitAll()
-
-                        /*
-                         * Swagger / OpenAPI endpoints.
-                         */
-                        .requestMatchers(
+                                "/api/auth/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/actuator/health"
                         ).permitAll()
-
-                        /*
-                         * Protected product APIs.
-                         */
-                        .requestMatchers("/api/products/**")
-                        .authenticated()
-
-                        /*
-                         * Protected sales APIs.
-                         */
-                        .requestMatchers("/api/sales/**")
-                        .authenticated()
-
-                        /*
-                         * Everything else requires authentication.
-                         */
-                        .anyRequest()
-                        .authenticated()
+                        .anyRequest().authenticated()
                 )
-
-                /*
-                 * Tell Spring Security to validate JWT Bearer tokens.
-                 */
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwt -> {})
+                .exceptionHandling(ex ->
+                        ex.authenticationEntryPoint(
+                                (request, response, authException) ->
+                                        response.sendError(
+                                                HttpStatus.UNAUTHORIZED.value(),
+                                                "Unauthorized"
+                                        )
+                        )
+                )
+                .addFilterBefore(
+                        jwtAuthFilter,
+                        UsernamePasswordAuthenticationFilter.class
                 );
 
         return http.build();
