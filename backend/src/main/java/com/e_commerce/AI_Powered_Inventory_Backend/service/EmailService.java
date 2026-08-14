@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -48,6 +49,7 @@ public class EmailService {
         return resendApiKey != null && !resendApiKey.isBlank();
     }
 
+    @Async("mailExecutor")
     public void sendVerificationEmail(String toEmail, String businessName, String token) {
         String verifyUrl = appBaseUrl + "/verify?token=" + token;
 

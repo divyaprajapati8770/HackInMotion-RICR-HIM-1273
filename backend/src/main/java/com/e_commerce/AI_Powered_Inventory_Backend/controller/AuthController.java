@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -49,18 +51,27 @@ public class AuthController {
         );
     }
 
-    @GetMapping("/verify-email")
-    @Operation(
-            summary = "Verify email address",
-            description = "Verifies a user's email address using the verification token sent by email."
-    )
-    public ResponseEntity<String> verifyEmail(
+    @GetMapping("/verify")
+    public ResponseEntity<Map<String, String>> verify(
             @RequestParam String token) {
 
         authService.verifyEmail(token);
 
         return ResponseEntity.ok(
-                "Email verified successfully. You can now log in."
+                Map.of("message", "Your email has been verified.")
+        );
+    }
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Map<String, String>> resendVerification(
+            @RequestParam String email) {
+
+        authService.resendVerification(email);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message",
+                        "If that account needs verifying, a new link is on its way."
+                )
         );
     }
 }
