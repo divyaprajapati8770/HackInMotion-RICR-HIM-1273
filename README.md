@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="frontend/public/obstocker-logo.png" alt="Obstocker" width="110" />
+<img src="frontend/public/images/logo.png" alt="Obstocker" width="110" />
 
 # Obstocker
 
