@@ -16,9 +16,9 @@
 
 | Field | Details |
 |---|---|
-| **Team name** | _[Obstocker]_ |
-| **Team code** | _[RICR-HIM-1273]_ |
-| **Members** | _[Divya Prajapati, Abdul Arham Jamal, Vivek Chauhan, Mayank Singh Bhati]_ |
+| **Team name** | Obstocker |
+| **Team code** | RICR-HIM-1273 |
+| **Members** | Divya Prajapati, Abdul Arham Jamal, Vivek Chauhan, Mayank Singh Bhati |
 | **Selected theme** | E-Commerce & Retail |
 
 ---
