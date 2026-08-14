@@ -322,13 +322,13 @@ _[to be added]_
 
 | View | Screenshot |
 |---|---|
-| Landing page | _[to be added]_ |
+| Landing page | <img src="frontend/public/images/landing page.png" alt="Obstocker" width="200" /> |
 | Dashboard | _[to be added]_ |
 | Inventory | _[to be added]_ |
 | Forecasts | _[to be added]_ |
-| Analytics & Reports | _[to be added]_ |
-| Alerts | <img src="frontend/public/images/alert.jpeg" alt="Obstocker" width="110" /> |
-| What-If Simulator | <img src="frontend/public/images/what-if.jpeg" alt="Obstocker" width="110" /> |
+| Analytics & Reports | <img src="frontend/public/images/analytics_and_report.jpeg" alt="Obstocker" width="200" /> |
+| Alerts | <img src="frontend/public/images/alert.jpeg" alt="Obstocker" width="200" /> |
+| What-If Simulator | <img src="frontend/public/images/what-if.jpeg" alt="Obstocker" width="200" /> |
 | Dark mode | _[to be added]_ |
 
 ---
