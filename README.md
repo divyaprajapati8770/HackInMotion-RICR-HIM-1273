@@ -310,7 +310,7 @@ Every error returns the same JSON via a global handler, so the frontend has a si
 
 ## Architecture Diagram
 
-![Architecture](./architecture-diagram.png)
+![Architecture](<img src="frontend/public/images/system_architecture.png" alt="Obstocker" width="300" />)
 
 **Forecast flow:** sales history → Spring Boot → Python Holt-Winters forecast (Java fallback if unreachable) → forecasts and alerts persisted to MySQL → analytics engine derives ABC class, volatility, anomalies and safety-stock recommendations → dashboard and reports.
 
@@ -322,14 +322,14 @@ _[to be added]_
 
 | View | Screenshot |
 |---|---|
-| Landing page | <img src="frontend/public/images/landing_page.png" alt="Obstocker" width="200" /> |
-| Dashboard | <img src="frontend/public/images/dashboard.jpeg" alt="Obstocker" width="200" /> |
-| Inventory | <img src="frontend/public/images/inventory.jpeg" alt="Obstocker" width="200" /> |
-| Forecasts | <img src="frontend/public/images/forecast.png" alt="Obstocker" width="200" /> |
-| Analytics & Reports | <img src="frontend/public/images/analytics.png" alt="Obstocker" width="200" /> |
-| Alerts | <img src="frontend/public/images/alerts.png" alt="Obstocker" width="200" /> |
-| What-If Simulator | <img src="frontend/public/images/what-if.jpeg" alt="Obstocker" width="200" /> |
-| Dark mode | <img src="frontend/public/images/dark_theme.png" alt="Obstocker" width="200" /> |
+| Landing page | <img src="frontend/public/images/landing_page.png" alt="Obstocker" width="300" /> |
+| Dashboard | <img src="frontend/public/images/dashboard.jpeg" alt="Obstocker" width="300" /> |
+| Inventory | <img src="frontend/public/images/inventory.jpeg" alt="Obstocker" width="300" /> |
+| Forecasts | <img src="frontend/public/images/forecast.png" alt="Obstocker" width="300" /> |
+| Analytics & Reports | <img src="frontend/public/images/analytics.png" alt="Obstocker" width="300" /> |
+| Alerts | <img src="frontend/public/images/alerts.png" alt="Obstocker" width="300" /> |
+| What-If Simulator | <img src="frontend/public/images/what-if.jpeg" alt="Obstocker" width="300" /> |
+| Dark mode | <img src="frontend/public/images/dark_theme.png" alt="Obstocker" width="300" /> |
 
 ---
 
