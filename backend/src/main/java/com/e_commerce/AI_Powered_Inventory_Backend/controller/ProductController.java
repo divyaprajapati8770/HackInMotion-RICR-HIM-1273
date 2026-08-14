@@ -1,5 +1,6 @@
 package com.e_commerce.AI_Powered_Inventory_Backend.controller;
 
+import com.e_commerce.AI_Powered_Inventory_Backend.security.CurrentUser;
 import jakarta.validation.Valid;
 import com.e_commerce.AI_Powered_Inventory_Backend.entity.Product;
 import com.e_commerce.AI_Powered_Inventory_Backend.service.ProductService;
@@ -56,6 +57,19 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PatchMapping("/{id}/stock")
+    public ResponseEntity<Void> adjustStock(
+            @PathVariable Long id,
+            @RequestParam int delta) {
+
+        productService.adjustStock(
+                CurrentUser.id(),
+                id,
+                delta
+        );
+
         return ResponseEntity.noContent().build();
     }
 }
