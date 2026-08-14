@@ -327,8 +327,8 @@ _[to be added]_
 | Inventory | _[to be added]_ |
 | Forecasts | _[to be added]_ |
 | Analytics & Reports | _[to be added]_ |
-| Alerts | _[to be added]_ |
-| What-If Simulator | _[to be added]_ |
+| Alerts | <img src="frontend/public/images/alert.jpeg" alt="Obstocker" width="110" /> |
+| What-If Simulator | <img src="frontend/public/images/what-if.jpeg" alt="Obstocker" width="110" /> |
 | Dark mode | _[to be added]_ |
 
 ---
