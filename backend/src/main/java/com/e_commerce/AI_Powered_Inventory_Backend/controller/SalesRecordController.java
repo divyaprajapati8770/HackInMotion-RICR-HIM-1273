@@ -1,7 +1,7 @@
 package com.e_commerce.AI_Powered_Inventory_Backend.controller;
 
 import com.e_commerce.AI_Powered_Inventory_Backend.entity.SalesRecord;
-import com.e_commerce.AI_Powered_Inventory_Backend.service.SalesRecordService;
+import com.e_commerce.AI_Powered_Inventory_Backend.service.SalesService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +14,9 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class SalesRecordController {
 
-    private final SalesRecordService salesRecordService;
+    private final SalesService salesRecordService;
 
-    public SalesRecordController(SalesRecordService salesRecordService) {
+    public SalesRecordController(SalesService salesRecordService) {
         this.salesRecordService = salesRecordService;
     }
 
