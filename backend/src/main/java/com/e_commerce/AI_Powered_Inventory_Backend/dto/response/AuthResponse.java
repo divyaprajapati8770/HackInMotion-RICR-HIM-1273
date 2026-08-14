@@ -7,5 +7,6 @@ public record AuthResponse(
         String token,
         Long userId,
         String businessName,
-        String email
+        String email,
+        Boolean emailVerified
 ) {}

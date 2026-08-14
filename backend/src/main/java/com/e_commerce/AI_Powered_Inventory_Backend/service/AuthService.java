@@ -4,9 +4,8 @@ import com.e_commerce.AI_Powered_Inventory_Backend.dto.request.LoginRequest;
 import com.e_commerce.AI_Powered_Inventory_Backend.dto.request.SignupRequest;
 import com.e_commerce.AI_Powered_Inventory_Backend.dto.response.AuthResponse;
 import com.e_commerce.AI_Powered_Inventory_Backend.exception.ApiException;
-import com.e_commerce.AI_Powered_Inventory_Backend.entity.EmailVerificationToken;
 import com.e_commerce.AI_Powered_Inventory_Backend.entity.User;
-import com.e_commerce.AI_Powered_Inventory_Backend.repository.EmailVerificationTokenRepository;
+
 import com.e_commerce.AI_Powered_Inventory_Backend.repository.UserRepository;
 import com.e_commerce.AI_Powered_Inventory_Backend.security.JwtService;
 import com.e_commerce.AI_Powered_Inventory_Backend.service.EmailService;
@@ -101,36 +100,34 @@ public class AuthService {
                 .build();
     }
 
-    @Transactional
-    public void verifyEmail(String token) {
+        @Transactional
+        public void verifyEmail(String token) {
 
-        EmailVerificationToken verificationToken =
-                emailVerificationTokenRepository
-                        .findByToken(token)
-                        .orElseThrow(() ->
-                                new ApiException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "Invalid verification token."
-                                )
-                        );
-
-        // Check if token was already used
-        if (verificationToken.isUsed()) {
-            throw new ApiException(
-                    HttpStatus.BAD_REQUEST,
-                    "This verification link has already been used."
+        User user = userRepository.findByVerificationToken(token)
+            .orElseThrow(() ->
+                    new ApiException(
+                            HttpStatus.BAD_REQUEST,
+                            "This verification link is invalid or has already been used."
+                    )
             );
-        }
 
-        // Check token expiry
-        if (verificationToken.getExpiresAt()
-                .isBefore(LocalDateTime.now())) {
+        if (Boolean.TRUE.equals(user.getEnabled())) {
+        return;
+         }
 
-            throw new ApiException(
-                    HttpStatus.BAD_REQUEST,
-                    "This verification link has expired."
-            );
-        }
+         if (user.getVerificationTokenExpiresAt() != null
+            && user.getVerificationTokenExpiresAt()
+            .isBefore(LocalDateTime.now())) {
+
+        throw new ApiException(
+                HttpStatus.GONE,
+                "This verification link has expired."
+        );
+    }
+
+    user.setEnabled(true);
+    userRepository.save(user);
+  }
 
         User user = verificationToken.getUser();
 

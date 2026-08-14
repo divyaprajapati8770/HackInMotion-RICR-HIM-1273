@@ -42,9 +42,18 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @Column(name = "email_verified", nullable = false)
     @Builder.Default
-    private boolean emailVerified = false;
+    @Column(nullable = false)
+    private Boolean enabled = false;
+
+    @Column(name = "verification_token", length = 120)
+    private String verificationToken;
+
+    @Column(name = "verification_token_expires_at")
+    private LocalDateTime verificationTokenExpiresAt;
+
+    @Column(name = "auth_provider", length = 30)
+    private String authProvider;
 
     @PreUpdate
     public void preUpdate() {
