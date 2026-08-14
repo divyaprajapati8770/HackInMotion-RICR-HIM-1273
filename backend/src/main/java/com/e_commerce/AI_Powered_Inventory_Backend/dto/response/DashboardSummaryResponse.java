@@ -1,6 +1,8 @@
 package com.e_commerce.AI_Powered_Inventory_Backend.dto.response;
 
 import lombok.Builder;
+import java.util.List;
+import com.e_commerce.AI_Powered_Inventory_Backend.dto.response.AlertResponse;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,7 +18,8 @@ public record DashboardSummaryResponse(
         BigDecimal predictedRevenueNext30,
         Map<String, Long> categoryDistribution,
         Map<String, BigDecimal> categoryValueDistribution,
-        List<DemandTrendPoint> demandTrend
+        List<DemandTrendPoint> demandTrend,
+        List<AlertResponse> recentAlerts
 ) {
     @Builder
     public record DemandTrendPoint(String label, BigDecimal actualUnits, BigDecimal forecastUnits) {}
