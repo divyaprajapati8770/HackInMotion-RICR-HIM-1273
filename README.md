@@ -322,14 +322,14 @@ _[to be added]_
 
 | View | Screenshot |
 |---|---|
-| Landing page | <img src="frontend/public/images/landing page.png" alt="Obstocker" width="200" /> |
-| Dashboard | _[to be added]_ |
-| Inventory | _[to be added]_ |
-| Forecasts | _[to be added]_ |
-| Analytics & Reports | <img src="frontend/public/images/analytics_and_report.jpeg" alt="Obstocker" width="200" /> |
-| Alerts | <img src="frontend/public/images/alert.jpeg" alt="Obstocker" width="200" /> |
+| Landing page | <img src="frontend/public/images/landing_page.png" alt="Obstocker" width="200" /> |
+| Dashboard | <img src="frontend/public/images/dashboard.jpeg" alt="Obstocker" width="200" /> |
+| Inventory | <img src="frontend/public/images/inventory.jpeg" alt="Obstocker" width="200" /> |
+| Forecasts | <img src="frontend/public/images/forecast.png" alt="Obstocker" width="200" /> |
+| Analytics & Reports | <img src="frontend/public/images/analytics.png" alt="Obstocker" width="200" /> |
+| Alerts | <img src="frontend/public/images/alerts.png" alt="Obstocker" width="200" /> |
 | What-If Simulator | <img src="frontend/public/images/what-if.jpeg" alt="Obstocker" width="200" /> |
-| Dark mode | _[to be added]_ |
+| Dark mode | <img src="frontend/public/images/dark_theme.png" alt="Obstocker" width="200" /> |
 
 ---
 
