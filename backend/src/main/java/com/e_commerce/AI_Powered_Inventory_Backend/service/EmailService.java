@@ -54,9 +54,9 @@ public class EmailService {
         String verifyUrl = appBaseUrl + "/verify?token=" + token;
 
         if (!isConfigured()) {
-            log.warn("""
-                    RESEND_API_KEY is not set — no verification email was sent to {}.
-                    Verification link (open manually to activate the account): {}""", toEmail, verifyUrl);
+            log.warn(
+                    "RESEND_API_KEY is not configured. Verification email was not sent."
+            );
             return;
         }
 

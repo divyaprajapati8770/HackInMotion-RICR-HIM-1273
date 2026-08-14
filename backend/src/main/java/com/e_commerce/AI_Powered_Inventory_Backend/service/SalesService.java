@@ -163,12 +163,68 @@ public class SalesService {
     // ------------------------------------------------------------------
 
     @Transactional
-    public CsvUploadResponse uploadCsv(Long userId, MultipartFile file) {
+    public CsvUploadResponse uploadCsv(
+            Long userId,
+            MultipartFile file) {
+
         if (file == null || file.isEmpty()) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Please attach a non-empty CSV file.");
+            throw new ApiException(
+                    HttpStatus.BAD_REQUEST,
+                    "Please attach a non-empty CSV file."
+            );
+        }
+
+        String filename = file.getOriginalFilename();
+
+        if (filename == null || filename.isBlank()) {
+            throw new ApiException(
+                    HttpStatus.BAD_REQUEST,
+                    "CSV filename is required."
+            );
+        }
+
+        String normalizedFilename =
+                filename.toLowerCase(Locale.ROOT);
+
+        if (!normalizedFilename.endsWith(".csv")) {
+            throw new ApiException(
+                    HttpStatus.BAD_REQUEST,
+                    "Only CSV files are allowed."
+            );
+        }
+
+        String contentType = file.getContentType();
+
+        if (contentType != null
+                && !contentType.equalsIgnoreCase("text/csv")
+                && !contentType.equalsIgnoreCase("application/csv")
+                && !contentType.equalsIgnoreCase("application/vnd.ms-excel")
+        ) {
+            throw new ApiException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid CSV content type."
+            );
+        }
+
+        if (file.getSize() > 10 * 1024 * 1024) {
+            throw new ApiException(
+                    HttpStatus.BAD_REQUEST,
+                    "CSV file must be smaller than 10 MB."
+            );
         }
 
         Map<String, Product> skuIndex = new HashMap<>();
+
+        productRepository
+                .findByUserId(userId)
+                .forEach(product ->
+                        skuIndex.put(
+                                product.getSku().toLowerCase(Locale.ROOT),
+                                product
+                        )
+                );
+
+        // existing parsing logic continues here...
         productRepository.findByUserId(userId).forEach(p -> skuIndex.put(p.getSku().toLowerCase(), p));
 
         List<String> warnings = new ArrayList<>();

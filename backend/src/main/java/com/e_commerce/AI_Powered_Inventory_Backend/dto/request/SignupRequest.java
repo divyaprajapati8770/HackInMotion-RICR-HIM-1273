@@ -7,5 +7,5 @@ import jakarta.validation.constraints.Size;
 public record SignupRequest(
         @NotBlank(message = "Business name is required") String businessName,
         @NotBlank @Email(message = "A valid email is required") String email,
-        @NotBlank @Size(min = 8, message = "Password must be at least 8 characters") String password
+        @NotBlank @Size(min = 12, max = 72, message = "Password must be between 12 and 72 characters") String password
 ) {}

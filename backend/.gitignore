@@ -1,33 +1,68 @@
-HELP.md
+# =========================
+# Maven / Java
+# =========================
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+*.class
+build/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Keep Maven Wrapper JAR if committed
+!.mvn/wrapper/maven-wrapper.jar
 
-### IntelliJ IDEA ###
-.idea
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Spring / Local Config
+# =========================
+application-local.properties
+application-local.yml
+application-local.yaml
+
+# =========================
+# IntelliJ IDEA
+# =========================
+.idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+# =========================
+# Eclipse / STS
+# =========================
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# =========================
+# NetBeans
+# =========================
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# =========================
+# VS Code
+# =========================
 .vscode/
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db

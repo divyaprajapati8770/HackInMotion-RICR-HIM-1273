@@ -1,19 +1,7 @@
 package com.e_commerce.AI_Powered_Inventory_Backend.security;
 
-import com.e_commerce.AI_Powered_Inventory_Backend.entity.User;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.jwt.*;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,53 +15,95 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${app.jwt.secret}")
-    private String secret;
+    private final SecretKey signingKey;
+    private final long expirationMs;
 
-    @Value("${app.jwt.expiration-ms}")
-    private long expirationMs;
+    public JwtService(
+            @Value("${app.jwt.secret}") String secret,
+            @Value("${app.jwt.expiration-ms}") long expirationMs) {
 
-    private SecretKey key() {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        if (secret == null || secret.length() < 32) {
+            throw new IllegalStateException(
+                    "JWT_SECRET must be at least 32 characters long."
+            );
+        }
+
+        this.signingKey =
+                Keys.hmacShaKeyFor(
+                        secret.getBytes(StandardCharsets.UTF_8)
+                );
+
+        this.expirationMs = expirationMs;
     }
 
     public String generateToken(Long userId, String email) {
+
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + expirationMs);
+        Date expiry =
+                new Date(now.getTime() + expirationMs);
+
         return Jwts.builder()
-                .claims(Map.of("uid", userId))
+                .claims(Map.of(
+                        "uid", userId
+                ))
                 .subject(email)
                 .issuedAt(now)
                 .expiration(expiry)
-                .signWith(key(), SignatureAlgorithm.HS256)
+                .signWith(signingKey)
                 .compact();
     }
 
     public String extractEmail(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(
+                token,
+                Claims::getSubject
+        );
     }
 
     public Long extractUserId(String token) {
-        Claims claims = extractAllClaims(token);
-        return claims.get("uid", Long.class);
+
+        Claims claims =
+                extractAllClaims(token);
+
+        return claims.get(
+                "uid",
+                Long.class
+        );
     }
 
-    public boolean isTokenValid(String token, String email) {
-        String tokenEmail = extractEmail(token);
-        return tokenEmail.equals(email) && !isTokenExpired(token);
+    public boolean isTokenValid(
+            String token,
+            String email) {
+
+        String tokenEmail =
+                extractEmail(token);
+
+        return tokenEmail != null
+                && tokenEmail.equals(email)
+                && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
-        return extractClaim(token, Claims::getExpiration).before(new Date());
+
+        return extractClaim(
+                token,
+                Claims::getExpiration
+        ).before(new Date());
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> resolver) {
-        return resolver.apply(extractAllClaims(token));
+    private <T> T extractClaim(
+            String token,
+            Function<Claims, T> resolver) {
+
+        return resolver.apply(
+                extractAllClaims(token)
+        );
     }
 
     private Claims extractAllClaims(String token) {
+
         return Jwts.parser()
-                .verifyWith(key())
+                .verifyWith(signingKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

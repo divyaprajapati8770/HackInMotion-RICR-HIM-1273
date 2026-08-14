@@ -61,9 +61,8 @@ public class AuthService {
         // Seed demo data so the dashboard is never empty on first login.
         salesService.seedDemoData(user.getId());
 
-        String jwt = jwtService.generateToken(user.getId(), user.getEmail());
         return AuthResponse.builder()
-                .token(jwt)
+                .token(null)
                 .userId(user.getId())
                 .businessName(user.getBusinessName())
                 .email(user.getEmail())
@@ -105,44 +104,85 @@ public class AuthService {
         }
 
         user.setEnabled(true);
+        user.setVerificationToken(null);
+        user.setVerificationTokenExpiresAt(null);
+
         userRepository.save(user);
     }
 
     /** Re-issues a token and re-sends the email. No-op (silently OK) if already verified. */
     @Transactional
     public void resendVerification(String email) {
-        User user = userRepository.findByEmail(email.toLowerCase().trim())
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "No account found for that email."));
 
-        if (Boolean.TRUE.equals(user.getEnabled())) return;
+        if (email == null || email.isBlank()) {
+            return;
+        }
 
-        String token = newVerificationToken();
-        user.setVerificationToken(token);
-        user.setVerificationTokenExpiresAt(LocalDateTime.now().plusHours(24));
-        userRepository.save(user);
+        userRepository.findByEmail(
+                email.toLowerCase().trim()
+        ).ifPresent(user -> {
 
-        emailService.sendVerificationEmail(user.getEmail(), user.getBusinessName(), token);
+            if (Boolean.TRUE.equals(user.getEnabled())) {
+                return;
+            }
+
+            String token = newVerificationToken();
+
+            user.setVerificationToken(token);
+            user.setVerificationTokenExpiresAt(
+                    LocalDateTime.now().plusHours(24)
+            );
+
+            userRepository.save(user);
+
+            emailService.sendVerificationEmail(
+                    user.getEmail(),
+                    user.getBusinessName(),
+                    token
+            );
+        });
     }
 
     public AuthResponse login(LoginRequest req) {
-        User user = userRepository.findByEmail(req.email().toLowerCase().trim())
-                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password."));
 
-        if (!passwordEncoder.matches(req.password(), user.getPasswordHash())) {
-            throw new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password.");
+        User user = userRepository.findByEmail(
+                req.email().toLowerCase().trim()
+        ).orElseThrow(() ->
+                new ApiException(
+                        HttpStatus.UNAUTHORIZED,
+                        "Invalid email or password."
+                )
+        );
+
+        if (!passwordEncoder.matches(
+                req.password(),
+                user.getPasswordHash()
+        )) {
+            throw new ApiException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Invalid email or password."
+            );
         }
 
-        // Note: login is intentionally NOT blocked on user.getEnabled().
-        // The unverified state is surfaced to the client via emailVerified
-        // so the UI can show a persistent "verify your email" banner. A
-        // hard block here would lock a demo out behind an inbox round-trip.
-        String jwt = jwtService.generateToken(user.getId(), user.getEmail());
+        // Do not issue JWT to an unverified account.
+        if (!Boolean.TRUE.equals(user.getEnabled())) {
+            throw new ApiException(
+                    HttpStatus.FORBIDDEN,
+                    "Please verify your email before logging in."
+            );
+        }
+
+        String jwt = jwtService.generateToken(
+                user.getId(),
+                user.getEmail()
+        );
+
         return AuthResponse.builder()
                 .token(jwt)
                 .userId(user.getId())
                 .businessName(user.getBusinessName())
                 .email(user.getEmail())
-                .emailVerified(user.getEnabled())
+                .emailVerified(true)
                 .build();
     }
 }
