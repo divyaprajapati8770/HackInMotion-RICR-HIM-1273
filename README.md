@@ -16,9 +16,9 @@
 
 | Field | Details |
 |---|---|
-| **Team name** | _[to be filled in]_ |
-| **Team code** | _[to be filled in]_ |
-| **Members** | _[to be filled in]_ |
+| **Team name** | _[Obstocker]_ |
+| **Team code** | _[RICR-HIM-1273]_ |
+| **Members** | _[Divya Prajapati, Abdul Arham Jamal, Vivek Chauhan, Mayank Singh Bhati]_ |
 | **Selected theme** | E-Commerce & Retail |
 
 ---
@@ -70,7 +70,6 @@ Obstocker is a full-stack platform that turns raw sales history into actionable 
 | **Forecasting / ML** | Python 3.12, FastAPI, statsmodels (Holt-Winters), pandas, NumPy |
 | **Database** | MySQL 8 |
 | **Email** | Resend (REST API) |
-| **Orchestration** | Docker Compose |
 
 ### Why four services instead of one?
 
@@ -331,14 +330,6 @@ _[to be added]_
 | Alerts | _[to be added]_ |
 | What-If Simulator | _[to be added]_ |
 | Dark mode | _[to be added]_ |
-
----
-
-## Deployment Link
-
-_[to be added]_
-
-Suggested targets: **Vercel** (frontend), **Railway / Render** (Spring Boot + FastAPI), **PlanetScale / Railway MySQL** (database).
 
 ---
 
