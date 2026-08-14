@@ -194,6 +194,7 @@ public class AuthService {
                 .build();
     }
 
+
     /**
      * Generates a cryptographically secure verification token.
      */
