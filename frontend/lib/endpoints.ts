@@ -10,13 +10,30 @@ import type {
 } from "./types";
 
 // ---- Auth ----
-export async function signup(payload: { businessName: string; email: string; password: string }) {
+export async function signup(payload: {
+  businessName: string;
+  email: string;
+  password: string;
+}) {
   const { data } = await api.post<AuthResponse>("/api/auth/signup", payload);
+
   return data;
 }
 
-export async function login(payload: { email: string; password: string }) {
+export async function login(payload: {
+  email: string;
+  password: string;
+}) {
   const { data } = await api.post<AuthResponse>("/api/auth/login", payload);
+
+  return data;
+}
+
+export async function verifyEmail(token: string) {
+  const { data } = await api.get("/api/auth/verify", {
+    params: { token },
+  });
+
   return data;
 }
 
@@ -101,6 +118,14 @@ export async function listAlerts() {
 
 export async function resolveAlert(id: number) {
   await api.patch(`/api/alerts/${id}/resolve`);
+}
+
+export async function verifyEmail(token: string) {
+  const { data } = await api.get("/api/auth/verify", {
+    params: { token },
+  });
+
+  return data;
 }
 
 // ---- Dashboard ----
