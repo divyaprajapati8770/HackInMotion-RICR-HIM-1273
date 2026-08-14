@@ -322,7 +322,7 @@ _[to be added]_
 
 | View | Screenshot |
 |---|---|
-| Landing page | _[to be added]_ |
+| Landing page | <img src="frontend/public/images/landing page.png" alt="landing page" width="200" /> |
 | Dashboard | _[to be added]_ |
 | Inventory | _[to be added]_ |
 | Forecasts | _[to be added]_ |
@@ -330,6 +330,7 @@ _[to be added]_
 | Alerts | _[to be added]_ |
 | What-If Simulator | _[to be added]_ |
 | Dark mode | _[to be added]_ |
+| Login Page | <img src="frontend/public/images/login page.png" alt="landing page" width="200" /> |
 
 ---
 
