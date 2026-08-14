@@ -1,4 +1,4 @@
-package com.hackinmotion.inventory.dto.response;
+package com.e_commerce.AI_Powered_Inventory_Backend.dto.response;
 
 import lombok.Builder;
 
