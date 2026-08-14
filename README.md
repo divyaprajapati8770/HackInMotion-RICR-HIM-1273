@@ -310,7 +310,7 @@ Every error returns the same JSON via a global handler, so the frontend has a si
 
 ## Architecture Diagram
 
-![Architecture](<img src="frontend/public/images/system_architecture.png" alt="Obstocker" width="300" />)
+| <img src="frontend/public/images/system_architecture.png" alt="Obstocker" width="300" /> |
 
 **Forecast flow:** sales history → Spring Boot → Python Holt-Winters forecast (Java fallback if unreachable) → forecasts and alerts persisted to MySQL → analytics engine derives ABC class, volatility, anomalies and safety-stock recommendations → dashboard and reports.
 
