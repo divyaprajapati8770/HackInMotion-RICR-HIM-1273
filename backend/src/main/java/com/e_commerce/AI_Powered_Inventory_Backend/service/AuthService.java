@@ -83,6 +83,7 @@ public class AuthService {
         // Send verification email using Resend
         emailService.sendVerificationEmail(
                 user.getEmail(),
+                user.getBusinessName(),
                 token
         );
 

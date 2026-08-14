@@ -1,6 +1,7 @@
 package com.e_commerce.AI_Powered_Inventory_Backend.service;
 
 
+import com.e_commerce.AI_Powered_Inventory_Backend.dto.response.AlertResponse;
 import com.e_commerce.AI_Powered_Inventory_Backend.dto.response.DashboardSummaryResponse;
 import com.e_commerce.AI_Powered_Inventory_Backend.entity.Forecast;
 import com.e_commerce.AI_Powered_Inventory_Backend.entity.Product;
@@ -9,6 +10,7 @@ import com.e_commerce.AI_Powered_Inventory_Backend.repository.ForecastRepository
 import com.e_commerce.AI_Powered_Inventory_Backend.repository.ProductRepository;
 import com.e_commerce.AI_Powered_Inventory_Backend.repository.SalesRecordRepository;
 
+import com.e_commerce.AI_Powered_Inventory_Backend.util.StockStatusUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,7 @@ public class DashboardService {
     private final ProductRepository productRepository;
     private final SalesRecordRepository salesRecordRepository;
     private final ForecastRepository forecastRepository;
+    private final AlertService alertService;
 
     public DashboardSummaryResponse getSummary(Long userId) {
         List<Product> products = productRepository.findByUserIdAndIsActiveTrueOrderByNameAsc(userId);

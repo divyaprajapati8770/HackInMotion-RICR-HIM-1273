@@ -1,5 +1,7 @@
 package com.e_commerce.AI_Powered_Inventory_Backend.service;
 
+import com.e_commerce.AI_Powered_Inventory_Backend.dto.request.ManualSaleRequest;
+import com.e_commerce.AI_Powered_Inventory_Backend.security.CurrentUser;
 import com.e_commerce.AI_Powered_Inventory_Backend.dto.response.CsvUploadResponse;
 import com.e_commerce.AI_Powered_Inventory_Backend.exception.ApiException;
 import com.e_commerce.AI_Powered_Inventory_Backend.entity.Product;
@@ -36,6 +38,125 @@ public class SalesService {
 
     private final SalesRecordRepository salesRecordRepository;
     private final ProductRepository productRepository;
+
+    // ------------------------------------------------------------------
+// Sales record CRUD
+// ------------------------------------------------------------------
+
+    @Transactional
+    public SalesRecord createSalesRecord(SalesRecord salesRecord) {
+        Long userId = CurrentUser.id();
+
+        Product product = productRepository.findByIdAndUserId(
+                salesRecord.getProductId(),
+                userId
+        ).orElseThrow(() ->
+                new ApiException(
+                        HttpStatus.NOT_FOUND,
+                        "Product not found."
+                )
+        );
+
+        salesRecord.setId(null);
+        salesRecord.setUserId(userId);
+
+        if (salesRecord.getUnitPrice() == null) {
+            salesRecord.setUnitPrice(product.getUnitPrice());
+        }
+
+        if (salesRecord.getChannel() == null ||
+                salesRecord.getChannel().isBlank()) {
+            salesRecord.setChannel("default");
+        }
+
+        if (salesRecord.getSource() == null ||
+                salesRecord.getSource().isBlank()) {
+            salesRecord.setSource("MANUAL");
+        }
+
+        return salesRecordRepository.save(salesRecord);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SalesRecord> getAllSalesRecords() {
+        return salesRecordRepository.findByUserIdOrderBySaleDateDesc(
+                CurrentUser.id()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public SalesRecord getSalesRecordById(Long id) {
+        Long userId = CurrentUser.id();
+
+        return salesRecordRepository.findById(id)
+                .filter(record -> record.getUserId().equals(userId))
+                .orElseThrow(() ->
+                        new ApiException(
+                                HttpStatus.NOT_FOUND,
+                                "Sales record not found."
+                        )
+                );
+    }
+
+    @Transactional
+    public SalesRecord updateSalesRecord(
+            Long id,
+            SalesRecord updatedRecord
+    ) {
+        Long userId = CurrentUser.id();
+
+        SalesRecord existing = salesRecordRepository.findById(id)
+                .filter(record -> record.getUserId().equals(userId))
+                .orElseThrow(() ->
+                        new ApiException(
+                                HttpStatus.NOT_FOUND,
+                                "Sales record not found."
+                        )
+                );
+
+        Product product = productRepository.findByIdAndUserId(
+                updatedRecord.getProductId(),
+                userId
+        ).orElseThrow(() ->
+                new ApiException(
+                        HttpStatus.NOT_FOUND,
+                        "Product not found."
+                )
+        );
+
+        existing.setProductId(product.getId());
+        existing.setSaleDate(updatedRecord.getSaleDate());
+        existing.setUnitsSold(updatedRecord.getUnitsSold());
+
+        if (updatedRecord.getUnitPrice() != null) {
+            existing.setUnitPrice(updatedRecord.getUnitPrice());
+        } else {
+            existing.setUnitPrice(product.getUnitPrice());
+        }
+
+        if (updatedRecord.getChannel() != null &&
+                !updatedRecord.getChannel().isBlank()) {
+            existing.setChannel(updatedRecord.getChannel());
+        }
+
+        return salesRecordRepository.save(existing);
+    }
+
+    @Transactional
+    public void deleteSalesRecord(Long id) {
+        Long userId = CurrentUser.id();
+
+        SalesRecord existing = salesRecordRepository.findById(id)
+                .filter(record -> record.getUserId().equals(userId))
+                .orElseThrow(() ->
+                        new ApiException(
+                                HttpStatus.NOT_FOUND,
+                                "Sales record not found."
+                        )
+                );
+
+        salesRecordRepository.delete(existing);
+    }
 
     // ------------------------------------------------------------------
     // CSV upload
