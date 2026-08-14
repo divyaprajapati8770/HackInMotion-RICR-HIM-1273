@@ -43,10 +43,12 @@ public class ProductService {
 
         existingProduct.setName(updatedProduct.getName());
         existingProduct.setCategory(updatedProduct.getCategory());
-        existingProduct.setPrice(updatedProduct.getPrice());
+        existingProduct.setUnitPrice(updatedProduct.getUnitPrice());
         existingProduct.setCurrentStock(updatedProduct.getCurrentStock());
-        existingProduct.setSupplier(updatedProduct.getSupplier());
-        existingProduct.setLeadTime(updatedProduct.getLeadTime());
+        existingProduct.setSupplierName(updatedProduct.getSupplierName());
+        existingProduct.setSupplierLeadTimeDays(
+                updatedProduct.getSupplierLeadTimeDays()
+        );
 
         return productRepository.save(existingProduct);
     }
