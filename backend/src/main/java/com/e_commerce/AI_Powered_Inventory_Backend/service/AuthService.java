@@ -5,10 +5,8 @@ import com.e_commerce.AI_Powered_Inventory_Backend.dto.request.SignupRequest;
 import com.e_commerce.AI_Powered_Inventory_Backend.dto.response.AuthResponse;
 import com.e_commerce.AI_Powered_Inventory_Backend.exception.ApiException;
 import com.e_commerce.AI_Powered_Inventory_Backend.entity.User;
-
 import com.e_commerce.AI_Powered_Inventory_Backend.repository.UserRepository;
 import com.e_commerce.AI_Powered_Inventory_Backend.security.JwtService;
-import com.e_commerce.AI_Powered_Inventory_Backend.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,186 +24,126 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-
-    private final EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private final SalesService salesService;
     private final EmailService emailService;
+
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
+    /** URL-safe, 256-bit random token — not a UUID, which is only 122 bits of entropy and partly structural. */
+    private static String newVerificationToken() {
+        byte[] bytes = new byte[32];
+        SECURE_RANDOM.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
 
     @Transactional
     public AuthResponse signup(SignupRequest req) {
-
-        String email = req.email()
-                .toLowerCase()
-                .trim();
-
-        // Check whether email already exists
-        if (userRepository.existsByEmail(email)) {
-            throw new ApiException(
-                    HttpStatus.CONFLICT,
-                    "An account with this email already exists."
-            );
+        if (userRepository.existsByEmail(req.email())) {
+            throw new ApiException(HttpStatus.CONFLICT, "An account with this email already exists.");
         }
 
-        // Create new user
+        String token = newVerificationToken();
+
         User user = User.builder()
                 .businessName(req.businessName())
-                .email(email)
-                .passwordHash(
-                        passwordEncoder.encode(req.password())
-                )
+                .email(req.email().toLowerCase().trim())
+                .passwordHash(passwordEncoder.encode(req.password()))
                 .role("OWNER")
-                .emailVerified(false)
+                .enabled(false)
+                .verificationToken(token)
+                .verificationTokenExpiresAt(LocalDateTime.now().plusHours(24))
                 .build();
 
-        // Save user first so that it gets an ID
         user = userRepository.save(user);
 
-        // Generate secure verification token
-        String token = generateVerificationToken();
+        emailService.sendVerificationEmail(user.getEmail(), user.getBusinessName(), token);
 
-        // Create verification token entity
-        EmailVerificationToken verificationToken =
-                EmailVerificationToken.builder()
-                        .token(token)
-                        .user(user)
-                        .expiresAt(
-                                LocalDateTime.now()
-                                        .plusHours(24)
-                        )
-                        .used(false)
-                        .build();
+        // Seed demo data so the dashboard is never empty on first login.
+        salesService.seedDemoData(user.getId());
 
-        // Save verification token
-        emailVerificationTokenRepository.save(
-                verificationToken
-        );
-
-        // Send verification email using Resend
-        emailService.sendVerificationEmail(
-                user.getEmail(),
-                user.getBusinessName(),
-                token
-        );
-
-        /*
-         * We DO NOT generate a JWT here.
-         *
-         * User must verify their email first.
-         */
-
+        String jwt = jwtService.generateToken(user.getId(), user.getEmail());
         return AuthResponse.builder()
-                .token(null)
+                .token(jwt)
                 .userId(user.getId())
                 .businessName(user.getBusinessName())
                 .email(user.getEmail())
+                .emailVerified(user.getEnabled())
                 .build();
     }
 
-        @Transactional
-        public void verifyEmail(String token) {
-
+    /**
+     * Activates an account from an emailed token. Fully idempotent on a
+     * still-matching token: many corporate mail gateways and some webmail
+     * clients (Gmail's "link checking" included, in some configurations)
+     * pre-fetch links in an email before the human ever clicks — if the
+     * first hit had nulled the token, that prefetch would silently consume
+     * it and the user's real click would land on "verification failed" for
+     * an account that's actually fine. Instead, the token is left in place
+     * after a successful verify (it's a high-entropy secret that only ever
+     * reaches the user's inbox, so leaving it valid carries no real risk)
+     * and a repeat hit on an already-enabled account is a no-op success
+     * rather than an error — since the dashboard redirect on the frontend
+     * now depends on this call succeeding, a false failure here would wrongly
+     * lock the user out of their own account. An unmatched token (never
+     * issued, or superseded by a fresh one from resendVerification) still
+     * fails clearly.
+     */
+    @Transactional
+    public void verifyEmail(String token) {
         User user = userRepository.findByVerificationToken(token)
-            .orElseThrow(() ->
-                    new ApiException(
-                            HttpStatus.BAD_REQUEST,
-                            "This verification link is invalid or has already been used."
-                    )
-            );
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
+                        "This verification link is invalid or has already been used."));
 
         if (Boolean.TRUE.equals(user.getEnabled())) {
-        return;
-         }
+            return;
+        }
 
-         if (user.getVerificationTokenExpiresAt() != null
-            && user.getVerificationTokenExpiresAt()
-            .isBefore(LocalDateTime.now())) {
+        if (user.getVerificationTokenExpiresAt() != null
+                && user.getVerificationTokenExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new ApiException(HttpStatus.GONE,
+                    "This verification link has expired. Request a new one from your account settings.");
+        }
 
-        throw new ApiException(
-                HttpStatus.GONE,
-                "This verification link has expired."
-        );
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 
-    user.setEnabled(true);
-    userRepository.save(user);
-  }
+    /** Re-issues a token and re-sends the email. No-op (silently OK) if already verified. */
+    @Transactional
+    public void resendVerification(String email) {
+        User user = userRepository.findByEmail(email.toLowerCase().trim())
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "No account found for that email."));
 
-        User user = verificationToken.getUser();
+        if (Boolean.TRUE.equals(user.getEnabled())) return;
 
-        // Mark email as verified
-        user.setEmailVerified(true);
-
-        // Mark token as used
-        verificationToken.setUsed(true);
-
-        // Save changes
+        String token = newVerificationToken();
+        user.setVerificationToken(token);
+        user.setVerificationTokenExpiresAt(LocalDateTime.now().plusHours(24));
         userRepository.save(user);
-        emailVerificationTokenRepository.save(
-                verificationToken
-        );
+
+        emailService.sendVerificationEmail(user.getEmail(), user.getBusinessName(), token);
     }
 
     public AuthResponse login(LoginRequest req) {
+        User user = userRepository.findByEmail(req.email().toLowerCase().trim())
+                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password."));
 
-        String email = req.email()
-                .toLowerCase()
-                .trim();
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new ApiException(
-                                HttpStatus.UNAUTHORIZED,
-                                "Invalid email or password."
-                        )
-                );
-
-        // Check password
-        if (!passwordEncoder.matches(
-                req.password(),
-                user.getPasswordHash()
-        )) {
-            throw new ApiException(
-                    HttpStatus.UNAUTHORIZED,
-                    "Invalid email or password."
-            );
+        if (!passwordEncoder.matches(req.password(), user.getPasswordHash())) {
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password.");
         }
 
-        // Check email verification
-        if (!user.isEmailVerified()) {
-            throw new ApiException(
-                    HttpStatus.FORBIDDEN,
-                    "Please verify your email before logging in."
-            );
-        }
-
-        // Generate JWT only after email verification
-        String token = jwtService.generateToken(
-                user.getId(),
-                user.getEmail()
-        );
-
+        // Note: login is intentionally NOT blocked on user.getEnabled().
+        // The unverified state is surfaced to the client via emailVerified
+        // so the UI can show a persistent "verify your email" banner. A
+        // hard block here would lock a demo out behind an inbox round-trip.
+        String jwt = jwtService.generateToken(user.getId(), user.getEmail());
         return AuthResponse.builder()
-                .token(token)
+                .token(jwt)
                 .userId(user.getId())
                 .businessName(user.getBusinessName())
                 .email(user.getEmail())
+                .emailVerified(user.getEnabled())
                 .build();
     }
-
-
-    /**
-     * Generates a cryptographically secure verification token.
-     */
-    private String generateVerificationToken() {
-
-        byte[] randomBytes = new byte[32];
-
-        SecureRandom secureRandom =
-                new SecureRandom();
-
-        secureRandom.nextBytes(randomBytes);
-
-        return Base64.getUrlEncoder()
-                .withoutPadding()
-                .encodeToString(randomBytes);
-    }
 }
+
