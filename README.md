@@ -356,6 +356,15 @@ _[to be added]_
 - **Role-based access** — owner / manager / viewer permissions per account.
 - **Scheduled reporting** — automated weekly email digests of alerts and analytics.
 
+## Deployment
+
+### Backend
+The backend is deployed on Railway.
+
+**Backend API:** https://hackinmotion-ricr-him-1273-production-9645.up.railway.app
+
+**Health Check:** https://hackinmotion-ricr-him-1273-production-9645.up.railway.app/actuator/health
+
 ---
 
 <div align="center">
