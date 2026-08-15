@@ -365,6 +365,10 @@ The backend is deployed on Railway.
 
 **Health Check:** https://hackinmotion-ricr-him-1273-production-9645.up.railway.app/actuator/health
 
+## Frontend
+The Frontend is deployed on Netlify.
+
+**Live Demo** :https://obstocker.netlify.app
 ---
 
 <div align="center">
