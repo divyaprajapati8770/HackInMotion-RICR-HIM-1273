@@ -123,10 +123,10 @@ Once healthy:
 
 | Service | URL |
 |---|---|
-| Frontend | http://localhost:3000 |
-| Backend (Swagger UI) | http://localhost:8080/swagger-ui.html |
-| ML service (OpenAPI docs) | http://localhost:8000/docs |
-| MySQL | `localhost:3306` |
+| Frontend | https://obstocker.netlify.app/ |
+| Backend | **Backend API:** https://hackinmotion-ricr-him-1273-production-9645.up.railway.app
+
+**Health Check:** https://hackinmotion-ricr-him-1273-production-9645.up.railway.app/actuator/health |
 
 ### Option B — Run each service manually
 
@@ -356,19 +356,6 @@ _[to be added]_
 - **Role-based access** — owner / manager / viewer permissions per account.
 - **Scheduled reporting** — automated weekly email digests of alerts and analytics.
 
-## Deployment
-
-### Backend
-The backend is deployed on Railway.
-
-**Backend API:** https://hackinmotion-ricr-him-1273-production-9645.up.railway.app
-
-**Health Check:** https://hackinmotion-ricr-him-1273-production-9645.up.railway.app/actuator/health
-
-## Frontend
-The Frontend is deployed on Netlify.
-
-**Live Demo** :https://obstocker.netlify.app
 ---
 
 <div align="center">
