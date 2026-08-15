@@ -1,5 +1,6 @@
 {
-  "name": "inventory-forecasting-frontend",
+  "name": "obstocker",
+  "author": "Divya",
   "version": "1.0.0",
   "private": true,
   "scripts": {

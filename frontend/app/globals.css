@@ -1,26 +1,98 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-brand-primary: #0F172A;
+  --color-brand-secondary: #4F46E5;
+  --color-on-surface-variant: var(--on-surface-variant);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --canvas: #f8fafc;
+  --surface: #ffffff;
+  --surface-dim: #f1f5f9;
+  --surface-bright: #ffffff;
+  --surface-container: #ffffff;
+  --ink: #0f172a;
+  --on-surface: #0f172a;
+  --on-surface-variant: #64748b;
+  --outline: #e2e8f0;
+  --outline-variant: #cbd5e1;
+}
+
+.dark,
+:root[class~="dark"] {
+  --background: #090d16;
+  --foreground: #f8fafc;
+  --canvas: #090d16;
+  --surface: #0f172a;
+  --surface-dim: #0b1120;
+  --surface-bright: #1e293b;
+  --surface-container: #0f172a;
+  --ink: #f8fafc;
+  --on-surface: #f8fafc;
+  --on-surface-variant: #94a3b8;
+  --outline: #1e293b;
+  --outline-variant: #334155;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not(.light) {
+    --background: #090d16;
+    --foreground: #f8fafc;
+    --canvas: #090d16;
+    --surface: #0f172a;
+    --surface-dim: #0b1120;
+    --surface-bright: #1e293b;
+    --surface-container: #0f172a;
+    --ink: #f8fafc;
+    --on-surface: #f8fafc;
+    --on-surface-variant: #94a3b8;
+    --outline: #1e293b;
+    --outline-variant: #334155;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans, Arial, Helvetica, sans-serif);
+}
+
+/* 3D Card Tilt & Spotlights */
+.tilt-card {
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+}
+
+.tilt-spotlight {
+  position: relative;
+}
+.tilt-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 80%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.tilt-spotlight:hover::before {
+  opacity: 1;
+}
+
+.glow-card-hover:hover {
+  box-shadow: 0 0 25px 2px rgba(99, 102, 241, 0.15);
 }

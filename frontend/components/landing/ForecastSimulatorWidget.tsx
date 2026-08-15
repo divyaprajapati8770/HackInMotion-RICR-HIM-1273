@@ -27,14 +27,14 @@ export function ForecastSimulatorWidget() {
   const result = useMemo(() => simulateForecast(baseline, spike, leadTime), [baseline, spike, leadTime]);
 
   return (
-    <div id="simulator" className="mx-auto max-w-4xl rounded-3xl border border-slate-100 bg-surface p-8 shadow-card sm:p-10">
+    <div id="simulator" className="mx-auto max-w-4xl rounded-3xl border border-slate-100 bg-surface p-8 shadow-card sm:p-10 dark:border-slate-800/80">
       <div className="mb-8 flex items-center gap-3">
-        <div className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-50 text-indigo-600">
+        <div className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
           <TrendUp size={20} weight="bold" />
         </div>
         <div>
           <h3 className="font-display text-lg font-bold text-ink">Try the forecast simulator</h3>
-          <p className="text-sm text-slate-500">A simplified taste of what the real dashboard computes per product.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">A simplified taste of what the real dashboard computes per product.</p>
         </div>
       </div>
 
@@ -97,8 +97,8 @@ function SliderField({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between text-sm">
-        <label className="font-medium text-slate-600">{label}</label>
-        <span className="font-mono text-indigo-600">
+        <label className="font-medium text-slate-600 dark:text-slate-300">{label}</label>
+        <span className="font-mono text-indigo-600 dark:text-indigo-400">
           {signed && value > 0 ? "+" : ""}
           {value}
           {unit}

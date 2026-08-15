@@ -26,14 +26,14 @@ export function ROICalculator() {
   }, [monthlyRevenue, stockoutRate, excessInventoryValue]);
 
   return (
-    <div className="mx-auto max-w-4xl rounded-3xl border border-slate-100 bg-surface p-8 shadow-card sm:p-10">
+    <div className="mx-auto max-w-4xl rounded-3xl border border-slate-100 bg-surface p-8 shadow-card sm:p-10 dark:border-slate-800/80">
       <div className="mb-8 flex items-center gap-3">
-        <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-600">
+        <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
           <Calculator size={20} weight="bold" />
         </div>
         <div>
           <h3 className="font-display text-lg font-bold text-ink">Estimate your monthly recovery</h3>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             A rough, illustrative estimate — not a guarantee — based on typical stockout recovery and carrying-cost assumptions.
           </p>
         </div>
@@ -64,12 +64,12 @@ export function ROICalculator() {
         />
       </div>
 
-      <div className="mt-8 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-50 to-indigo-50 py-8 text-center">
-        <p className="text-sm font-medium text-slate-500">Estimated monthly recovery</p>
-        <p className="mt-1 font-display text-4xl font-black text-ink">
+      <div className="mt-8 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-50 to-indigo-50 p-8 text-center border border-emerald-100/60 dark:from-emerald-950/40 dark:to-indigo-950/40 dark:border-slate-800/80">
+        <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">Estimated monthly recovery</p>
+        <p className="mt-2 font-display text-4xl sm:text-5xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
           ₹{estimate.toLocaleString("en-IN")}
         </p>
-        <p className="mt-2 max-w-md text-xs text-slate-400">
+        <p className="mt-2.5 max-w-md text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
           Based on {STOCKOUT_RECOVERY_RATE * 100}% stockout-loss recovery and a {CARRYING_COST_RATE * 100}%/month carrying-cost assumption — your results will vary by category and season.
         </p>
       </div>

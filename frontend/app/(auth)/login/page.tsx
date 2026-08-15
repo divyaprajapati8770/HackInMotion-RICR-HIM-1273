@@ -61,7 +61,7 @@ export default function LoginPage() {
           </div>
 
           <h2 className="font-display text-2xl font-semibold text-ink">Welcome back</h2>
-          <p className="mt-1.5 text-sm text-slate-500">Log in to your inventory dashboard.</p>
+          <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Log in to your inventory dashboard.</p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             <Input
@@ -86,7 +86,7 @@ export default function LoginPage() {
             />
 
             {error && (
-              <div className="flex items-start gap-2 rounded-lg bg-rose-50 px-3.5 py-2.5 text-xs text-rose-600">
+              <div className="flex items-start gap-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 px-3.5 py-2.5 text-xs text-rose-600 dark:text-rose-300">
                 <Warning size={16} className="mt-0.5 shrink-0" />
                 {error}
               </div>
@@ -97,9 +97,9 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-slate-500">
+          <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="font-medium text-indigo-600 hover:underline">
+            <Link href="/signup" className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
               Create one
             </Link>
           </p>

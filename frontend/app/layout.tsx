@@ -10,7 +10,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "Stockwise — AI Inventory & Demand Forecasting",
+  title: "Obstocker — Inventory & Demand Forecasting",
   description:
     "Manage inventory, ingest sales history, and get AI-driven demand forecasts and restocking alerts in one dashboard.",
 };

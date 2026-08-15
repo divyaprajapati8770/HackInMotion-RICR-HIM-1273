@@ -24,8 +24,9 @@ export default function SalesPage() {
       const res = await uploadSalesCsv(file);
       setResult(res);
       setFile(null);
-    } catch (err: any) {
-      alert(err.message || "Failed to parse CSV file.");
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to parse CSV file.";
+      alert(errorMessage);
     } finally {
       setUploading(false);
     }

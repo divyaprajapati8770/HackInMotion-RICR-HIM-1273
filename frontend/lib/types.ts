@@ -8,6 +8,7 @@ export interface AuthResponse {
   userId: number;
   businessName: string;
   email: string;
+  emailVerified?: boolean;
 }
 
 export interface Product {

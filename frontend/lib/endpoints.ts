@@ -29,14 +29,6 @@ export async function login(payload: {
   return data;
 }
 
-export async function verifyEmail(token: string) {
-  const { data } = await api.get("/api/auth/verify", {
-    params: { token },
-  });
-
-  return data;
-}
-
 // ---- Products ----
 export async function listProducts() {
   const { data } = await api.get<Product[]>("/api/products");
@@ -118,14 +110,6 @@ export async function listAlerts() {
 
 export async function resolveAlert(id: number) {
   await api.patch(`/api/alerts/${id}/resolve`);
-}
-
-export async function verifyEmail(token: string) {
-  const { data } = await api.get("/api/auth/verify", {
-    params: { token },
-  });
-
-  return data;
 }
 
 // ---- Dashboard ----

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import {
-  PackageIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
   PlusIcon,

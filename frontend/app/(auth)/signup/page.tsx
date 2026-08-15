@@ -31,6 +31,18 @@ export default function SignupPage() {
     e.preventDefault();
     setError(null);
 
+    const trimmedBusiness = businessName.trim();
+    if (trimmedBusiness.length < 2) {
+      setError("Business name must be at least 2 characters.");
+      return;
+    }
+
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || !trimmedEmail.includes("@")) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     if (password.length < 8) {
       setError("Password must be at least 8 characters.");
       return;
@@ -38,7 +50,7 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
-      const res = await signup({ businessName, email, password });
+      const res = await signup({ businessName: trimmedBusiness, email: trimmedEmail, password });
       setSession(res);
       router.push("/dashboard");
     } catch (err) {
@@ -64,7 +76,7 @@ export default function SignupPage() {
           </div>
 
           <h2 className="font-display text-2xl font-semibold text-ink">Create your account</h2>
-          <p className="mt-1.5 text-sm text-slate-500">
+          <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
             We&apos;ll seed a demo catalog and 6 months of sales history so your dashboard isn&apos;t empty on day one.
           </p>
 
@@ -99,7 +111,7 @@ export default function SignupPage() {
             />
 
             {error && (
-              <div className="flex items-start gap-2 rounded-lg bg-rose-50 px-3.5 py-2.5 text-xs text-rose-600">
+              <div className="flex items-start gap-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 px-3.5 py-2.5 text-xs text-rose-600 dark:text-rose-300">
                 <Warning size={16} className="mt-0.5 shrink-0" />
                 {error}
               </div>
@@ -110,9 +122,9 @@ export default function SignupPage() {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-slate-500">
+          <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
             Already have an account?{" "}
-            <Link href="/login" className="font-medium text-indigo-600 hover:underline">
+            <Link href="/login" className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
               Log in
             </Link>
           </p>

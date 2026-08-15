@@ -2,13 +2,14 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { AuthResponse } from "./types";
 
 interface AuthState {
   token: string | null;
   userId: number | null;
   businessName: string | null;
   email: string | null;
-  setSession: (session: { token: string; userId: number; businessName: string; email: string }) => void;
+  setSession: (session: AuthResponse) => void;
   clearSession: () => void;
 }
 

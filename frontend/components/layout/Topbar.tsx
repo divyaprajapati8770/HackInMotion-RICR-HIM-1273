@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MagnifyingGlassIcon, BellRingingIcon } from "@phosphor-icons/react";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 
 interface TopbarProps {
   title: string;

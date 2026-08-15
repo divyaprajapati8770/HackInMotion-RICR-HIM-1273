@@ -25,9 +25,12 @@ export function FloatingInput({ label, value, onChange, type = "text", error, as
     onFocus: () => setFocused(true),
     onBlur: () => setFocused(false),
     className: cx(
-      "peer w-full rounded-lg border bg-white px-3.5 pt-5 pb-2 text-sm text-ink outline-none transition-shadow",
-      "focus:ring-2 focus:ring-indigo-100",
-      error ? "border-rose-300 focus:border-rose-400" : "border-slate-200 focus:border-indigo-400"
+      "peer w-full rounded-lg border bg-white px-3.5 pt-5 pb-2 text-sm text-ink outline-none transition-all",
+      "dark:border-slate-700 dark:bg-slate-900/90 dark:text-white",
+      "focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-950/50",
+      error
+        ? "border-rose-300 focus:border-rose-400 dark:border-rose-500"
+        : "border-slate-200 focus:border-indigo-400 dark:focus:border-indigo-500"
     ),
   };
 

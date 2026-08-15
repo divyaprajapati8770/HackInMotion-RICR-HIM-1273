@@ -43,7 +43,7 @@ export function Features() {
           Everything a restocking decision needs
         </h2>
         <p className="mt-4 text-slate-500">
-          Built for the moment you're staring at a stock level, wondering whether to order more.
+          Built for the moment {"you're"} staring at a stock level, wondering whether to order more.
         </p>
       </div>
 

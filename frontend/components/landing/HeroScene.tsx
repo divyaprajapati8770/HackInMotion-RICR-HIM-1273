@@ -73,9 +73,10 @@ function Scene() {
   }
 
   return (
-    <div className="absolute inset-0" onPointerMove={handlePointerMove}>
-      <Canvas camera={{ position: [0, 0, 8], fov: 45 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
-        <ambientLight intensity={0.6} />
+    <div className="absolute inset-0 bg-[#090d16]" onPointerMove={handlePointerMove}>
+      <Canvas camera={{ position: [0, 0, 8], fov: 45 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: false }}>
+        <color attach="background" args={["#090d16"]} />
+        <ambientLight intensity={0.8} />
         <pointLight position={[5, 5, 5]} intensity={60} color={BRAND_SECONDARY} />
         <pointLight position={[-5, -3, 3]} intensity={40} color={BRAND_TERTIARY} />
         <CubeField pointer={pointer} />
